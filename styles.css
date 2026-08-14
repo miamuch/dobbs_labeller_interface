@@ -426,6 +426,18 @@ button:focus {
   line-height: 1.45;
 }
 
+.tweet-box .duplicate-notice {
+  margin: 0 0 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #f0f0ee;
+  color: #3f3f3f;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
 .label-form {
   margin-top: 18px;
   display: grid;

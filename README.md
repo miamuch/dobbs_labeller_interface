@@ -36,6 +36,8 @@ The RA-facing UI intentionally does not show TJST priors, topic labels, model pr
 
 Rows are displayed in a deterministic stratified order. The ordering rotates across weeks first, then hidden prior/topic groups inside each week, so partial completion covers the project timeline and hidden strata more evenly. These balancing fields are not shown to annotators.
 
+Exact repeated tweet text is handled as a duplicate group. When an annotator saves one row in a duplicate group, the app saves the same label to every row with the exact same displayed tweet text for that annotator.
+
 ## Deployment
 
 This folder is plain static HTML/CSS/JS. It can be hosted on GitHub Pages, Netlify, Cloudflare Pages, or Codex Sites. No server-side secret is included in the frontend; `config.js` uses the Supabase publishable key.

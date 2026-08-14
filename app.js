@@ -19,6 +19,7 @@ const state = {
   annotator: null,
   items: [],
   labels: new Map(),
+  duplicateGroups: new Map(),
   currentIndex: 0,
   saveTimer: null,
   filteredIndexes: []
@@ -49,6 +50,7 @@ const els = {
   instructionsView: document.getElementById("instructionsView"),
   rowMeta: document.getElementById("rowMeta"),
   rowId: document.getElementById("rowId"),
+  duplicateNotice: document.getElementById("duplicateNotice"),
   tweetText: document.getElementById("tweetText"),
   labelForm: document.getElementById("labelForm"),
   prevRow: document.getElementById("prevRow"),
@@ -95,6 +97,27 @@ async function loadItems() {
   const response = await fetch("data/items.json", { cache: "no-store" });
   if (!response.ok) throw new Error("Could not load annotation items.");
   state.items = await response.json();
+  buildDuplicateGroups();
+}
+
+function textKey(item) {
+  return String(item.text_for_bert || item.text || "").trim().replace(/\s+/g, " ");
+}
+
+function buildDuplicateGroups() {
+  const byText = new Map();
+  state.items.forEach((item) => {
+    const key = textKey(item);
+    if (!key) return;
+    if (!byText.has(key)) byText.set(key, []);
+    byText.get(key).push(item);
+  });
+
+  state.duplicateGroups.clear();
+  for (const group of byText.values()) {
+    if (group.length < 2) continue;
+    group.forEach((item) => state.duplicateGroups.set(item.annotation_row_id, group));
+  }
 }
 
 async function login(accessCode) {
@@ -149,6 +172,18 @@ function getLabel(rowId) {
     state.labels.set(rowId, emptyLabel(rowId));
   }
   return state.labels.get(rowId);
+}
+
+function duplicateItemsFor(item) {
+  return state.duplicateGroups.get(item.annotation_row_id) || [item];
+}
+
+function copyLabelToItem(sourceLabel, targetItem) {
+  return {
+    ...sourceLabel,
+    annotation_row_id: targetItem.annotation_row_id,
+    annotation_batch: config.annotationBatch
+  };
 }
 
 function setFormValue(name, value) {
@@ -240,6 +275,11 @@ function renderCurrent() {
   els.rowMeta.textContent = `${item.week} · ${item.start_date} to ${item.end_date}`;
   els.rowId.textContent = `Row ${state.currentIndex + 1} of ${state.items.length}`;
   els.sidebarCurrent.textContent = `Row ${state.currentIndex + 1} of ${state.items.length}`;
+  const duplicateCount = duplicateItemsFor(item).length;
+  els.duplicateNotice.textContent = duplicateCount > 1
+    ? `Repeated tweet: saving this row also saves ${duplicateCount - 1} matching row${duplicateCount === 2 ? "" : "s"}.`
+    : "";
+  els.duplicateNotice.classList.toggle("hidden", duplicateCount < 2);
   els.tweetText.textContent = item.text_for_bert || item.text;
   hydrateForm(label);
   renderProgress();
@@ -268,20 +308,28 @@ function debouncedSave(status) {
 async function saveCurrent() {
   const item = currentItem();
   const label = getLabel(item.annotation_row_id);
+  const duplicateItems = duplicateItemsFor(item);
   try {
-    const { data, error } = await client.rpc("dobbs_save_label", {
-      p_access_code: state.accessCode,
-      p_annotation_row_id: item.annotation_row_id,
-      p_annotation_batch: config.annotationBatch,
-      p_label: label
-    });
-    if (error) throw error;
-    if (data && data[0]) {
-      label.updated_at = data[0].updated_at;
-      state.labels.set(item.annotation_row_id, label);
-      writeLocalBackup();
+    let updatedAt = null;
+    for (const duplicateItem of duplicateItems) {
+      const duplicateLabel = copyLabelToItem(label, duplicateItem);
+      const { data, error } = await client.rpc("dobbs_save_label", {
+        p_access_code: state.accessCode,
+        p_annotation_row_id: duplicateItem.annotation_row_id,
+        p_annotation_batch: config.annotationBatch,
+        p_label: duplicateLabel
+      });
+      if (error) throw error;
+      if (data && data[0]) {
+        duplicateLabel.updated_at = data[0].updated_at;
+        updatedAt = data[0].updated_at;
+      }
+      state.labels.set(duplicateItem.annotation_row_id, duplicateLabel);
     }
-    setStatus("Synced", "synced");
+    if (updatedAt) label.updated_at = updatedAt;
+    writeLocalBackup();
+    const duplicateText = duplicateItems.length > 1 ? ` ${duplicateItems.length} rows` : "";
+    setStatus(`Synced${duplicateText}`, "synced");
     renderProgress();
     renderRowList();
   } catch (err) {
