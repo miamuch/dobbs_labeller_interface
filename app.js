@@ -37,14 +37,13 @@ const els = {
   rowList: document.getElementById("rowList"),
   searchRows: document.getElementById("searchRows"),
   statusFilter: document.getElementById("statusFilter"),
+  labelTab: document.getElementById("labelTab"),
+  instructionsTab: document.getElementById("instructionsTab"),
+  labelView: document.getElementById("labelView"),
+  instructionsView: document.getElementById("instructionsView"),
   rowMeta: document.getElementById("rowMeta"),
   rowId: document.getElementById("rowId"),
   tweetText: document.getElementById("tweetText"),
-  tjstPrior: document.getElementById("tjstPrior"),
-  tjstTopic: document.getElementById("tjstTopic"),
-  weekValue: document.getElementById("weekValue"),
-  topicProbability: document.getElementById("topicProbability"),
-  topicWords: document.getElementById("topicWords"),
   labelForm: document.getElementById("labelForm"),
   prevRow: document.getElementById("prevRow"),
   nextRow: document.getElementById("nextRow"),
@@ -162,6 +161,8 @@ function readForm() {
   labelFields.forEach((field) => {
     if (field !== "row_status") label[field] = formData.get(field) || "";
   });
+  label.is_tjst_prior_correct = "";
+  label.is_side_reversal = "";
   return label;
 }
 
@@ -187,9 +188,6 @@ function itemMatches(item, label, query, filter) {
   const haystack = [
     item.annotation_row_id,
     item.week,
-    item.tjst_stance_prior,
-    item.tjst_topic,
-    item.topic_top_words,
     item.text_for_bert
   ].join(" ").toLowerCase();
   const matchesQuery = !query || haystack.includes(query);
@@ -218,8 +216,8 @@ function renderRowList() {
       rowIsComplete(label) ? "complete" : ""
     ].join(" ");
     button.innerHTML = `
-      <span class="row-title">${item.annotation_row_id}</span>
-      <span class="row-subtitle">${item.week} · ${item.tjst_stance_prior} · topic ${item.tjst_topic}</span>
+      <span class="row-title">Row ${index + 1}</span>
+      <span class="row-subtitle">${item.week} · ${item.start_date} to ${item.end_date}</span>
     `;
     button.addEventListener("click", () => {
       state.currentIndex = index;
@@ -232,17 +230,20 @@ function renderRowList() {
 function renderCurrent() {
   const item = currentItem();
   const label = getLabel(item.annotation_row_id);
-  els.rowMeta.textContent = `${item.week} · ${item.priority_for_labeling} · ${item.start_date} to ${item.end_date}`;
-  els.rowId.textContent = item.annotation_row_id;
+  els.rowMeta.textContent = `${item.week} · ${item.start_date} to ${item.end_date}`;
+  els.rowId.textContent = `Row ${state.currentIndex + 1} of ${state.items.length}`;
   els.tweetText.textContent = item.text_for_bert || item.text;
-  els.tjstPrior.textContent = item.tjst_stance_prior;
-  els.tjstTopic.textContent = item.tjst_topic;
-  els.weekValue.textContent = item.week;
-  els.topicProbability.textContent = Number(item.topic_probability).toFixed(3);
-  els.topicWords.textContent = item.topic_top_words;
   hydrateForm(label);
   renderProgress();
   renderRowList();
+}
+
+function showTab(name) {
+  const showingInstructions = name === "instructions";
+  els.instructionsView.classList.toggle("hidden", !showingInstructions);
+  els.labelView.classList.toggle("hidden", showingInstructions);
+  els.instructionsTab.classList.toggle("active", showingInstructions);
+  els.labelTab.classList.toggle("active", !showingInstructions);
 }
 
 function debouncedSave(status) {
@@ -390,6 +391,8 @@ els.prevRow.addEventListener("click", () => move(-1));
 els.nextRow.addEventListener("click", () => move(1));
 els.searchRows.addEventListener("input", renderRowList);
 els.statusFilter.addEventListener("change", renderRowList);
+els.labelTab.addEventListener("click", () => showTab("label"));
+els.instructionsTab.addEventListener("click", () => showTab("instructions"));
 els.exportMine.addEventListener("click", () => exportFromSupabase(false));
 els.exportAll.addEventListener("click", () => exportFromSupabase(true));
 

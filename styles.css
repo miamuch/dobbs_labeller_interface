@@ -211,6 +211,98 @@ button:focus {
   background: #222222;
 }
 
+.tabbar {
+  display: flex;
+  gap: 8px;
+  padding: 10px 24px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.tab-button {
+  min-width: 120px;
+  background: #fff;
+}
+
+.tab-button.active {
+  background: #1f1f1f;
+  border-color: #1f1f1f;
+  color: #fff;
+}
+
+.instructions-view {
+  padding: 24px;
+  overflow: auto;
+}
+
+.instructions-card {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.instructions-card h2 {
+  margin: 0;
+  max-width: 840px;
+  font-size: 26px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.instructions-card > p {
+  max-width: 860px;
+  color: #393939;
+  line-height: 1.55;
+}
+
+.instruction-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.instruction-grid section {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fbfbfa;
+}
+
+.instruction-grid h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.instruction-grid ul,
+.instruction-grid dl {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.45;
+}
+
+.instruction-grid li + li {
+  margin-top: 8px;
+}
+
+.instruction-grid dt {
+  margin-top: 10px;
+  font-weight: 800;
+}
+
+.instruction-grid dt:first-child {
+  margin-top: 0;
+}
+
+.instruction-grid dd {
+  margin: 3px 0 0;
+  color: #404040;
+  line-height: 1.45;
+}
+
 .main-grid {
   min-height: 0;
   display: grid;
@@ -309,48 +401,6 @@ button:focus {
   line-height: 1.45;
 }
 
-.context-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.context-grid div,
-.topic-words {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--panel);
-  padding: 10px 12px;
-}
-
-.context-grid span,
-.topic-words span {
-  display: block;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.context-grid strong {
-  display: block;
-  margin-top: 4px;
-  font-size: 15px;
-}
-
-.topic-words {
-  margin-top: 8px;
-}
-
-.topic-words p {
-  margin: 5px 0 0;
-  color: #343434;
-  font-size: 14px;
-  line-height: 1.35;
-}
-
 .label-form {
   margin-top: 18px;
   display: grid;
@@ -411,7 +461,7 @@ label textarea {
 
 .field-grid {
   display: grid;
-  grid-template-columns: 1.5fr repeat(3, minmax(150px, 1fr));
+  grid-template-columns: minmax(0, 1.6fr) minmax(180px, 0.8fr);
   gap: 12px;
 }
 
@@ -433,7 +483,7 @@ label textarea {
     border-bottom: 1px solid var(--border);
   }
 
-  .context-grid,
+  .instruction-grid,
   .field-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -452,7 +502,7 @@ label textarea {
   }
 
   .toolbar,
-  .context-grid,
+  .instruction-grid,
   .field-grid,
   .segmented,
   .segmented.compact {

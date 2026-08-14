@@ -1,6 +1,6 @@
 # Dobbs Labeling Interface
 
-Static labeling app for the 950-row `sub1000_new_tjst_fit_bert_workflow` Dobbs exemplar batch.
+Static stance-labeling app for the 950-row `sub1000_new_tjst_fit_bert_workflow` Dobbs exemplar batch.
 
 ## Files
 
@@ -19,6 +19,18 @@ codes out of GitHub and share them with annotators through a private channel.
 - A browser-local backup is also written after each field change.
 - `Export My CSV` downloads the current annotator's locally cached labels.
 - `Export All CSV` is visible only to the admin code and downloads all saved labels from Supabase.
+
+## Labeling Task
+
+Annotators should label only the human-perceived stance of the tweet:
+
+- `human_stance`
+- `human_stance_confidence`
+- `stance_evidence_span`
+- `exclude_from_bert` when a row should not be used downstream
+- optional notes/reason fields
+
+The RA-facing UI intentionally does not show TJST priors, topic labels, model predictions, or narrative-detection fields.
 
 ## Deployment
 
