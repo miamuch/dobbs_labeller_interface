@@ -34,6 +34,11 @@ const els = {
   progressCount: document.getElementById("progressCount"),
   progressDetail: document.getElementById("progressDetail"),
   progressMeter: document.getElementById("progressMeter"),
+  sidebarCurrent: document.getElementById("sidebarCurrent"),
+  sidebarPrevRow: document.getElementById("sidebarPrevRow"),
+  sidebarNextRow: document.getElementById("sidebarNextRow"),
+  toggleRowList: document.getElementById("toggleRowList"),
+  rowBrowser: document.getElementById("rowBrowser"),
   rowList: document.getElementById("rowList"),
   searchRows: document.getElementById("searchRows"),
   statusFilter: document.getElementById("statusFilter"),
@@ -232,6 +237,7 @@ function renderCurrent() {
   const label = getLabel(item.annotation_row_id);
   els.rowMeta.textContent = `${item.week} · ${item.start_date} to ${item.end_date}`;
   els.rowId.textContent = `Row ${state.currentIndex + 1} of ${state.items.length}`;
+  els.sidebarCurrent.textContent = `Row ${state.currentIndex + 1} of ${state.items.length}`;
   els.tweetText.textContent = item.text_for_bert || item.text;
   hydrateForm(label);
   renderProgress();
@@ -389,6 +395,14 @@ els.markComplete.addEventListener("click", async () => {
 });
 els.prevRow.addEventListener("click", () => move(-1));
 els.nextRow.addEventListener("click", () => move(1));
+els.sidebarPrevRow.addEventListener("click", () => move(-1));
+els.sidebarNextRow.addEventListener("click", () => move(1));
+els.toggleRowList.addEventListener("click", () => {
+  const willOpen = els.rowBrowser.classList.contains("hidden");
+  els.rowBrowser.classList.toggle("hidden", !willOpen);
+  els.toggleRowList.setAttribute("aria-expanded", String(willOpen));
+  els.toggleRowList.textContent = willOpen ? "Hide Rows" : "Browse Rows";
+});
 els.searchRows.addEventListener("input", renderRowList);
 els.statusFilter.addEventListener("change", renderRowList);
 els.labelTab.addEventListener("click", () => showTab("label"));

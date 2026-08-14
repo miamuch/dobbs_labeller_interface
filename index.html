@@ -106,15 +106,26 @@
         <div id="labelView" class="main-grid">
           <aside class="sidebar">
             <div class="toolbar">
-              <input id="searchRows" type="search" placeholder="Search rows">
-              <select id="statusFilter" aria-label="Status filter">
-                <option value="all">All</option>
-                <option value="incomplete">Incomplete</option>
-                <option value="complete">Complete</option>
-                <option value="flagged">Excluded</option>
-              </select>
+              <div>
+                <p class="eyebrow">Navigation</p>
+                <strong id="sidebarCurrent">Row 1 of 950</strong>
+              </div>
+              <div class="sidebar-nav">
+                <button id="sidebarPrevRow" type="button">Previous</button>
+                <button id="sidebarNextRow" type="button">Next</button>
+              </div>
+              <button id="toggleRowList" type="button" class="browse-toggle" aria-expanded="false">Browse Rows</button>
+              <div id="rowBrowser" class="row-browser hidden">
+                <input id="searchRows" type="search" placeholder="Search row text">
+                <select id="statusFilter" aria-label="Status filter">
+                  <option value="all">All</option>
+                  <option value="incomplete">Incomplete</option>
+                  <option value="complete">Complete</option>
+                  <option value="flagged">Excluded</option>
+                </select>
+                <div id="rowList" class="row-list" aria-label="Rows"></div>
+              </div>
             </div>
-            <div id="rowList" class="row-list" aria-label="Rows"></div>
           </aside>
 
           <article class="label-card">

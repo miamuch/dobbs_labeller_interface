@@ -310,23 +310,48 @@ button:focus {
 }
 
 .sidebar {
-  min-height: 0;
   border-right: 1px solid var(--border);
   background: var(--panel);
-  display: grid;
-  grid-template-rows: auto 1fr;
+  align-self: start;
+  position: sticky;
+  top: 0;
+  max-height: calc(100vh - 132px);
+  overflow: auto;
 }
 
 .toolbar {
   display: grid;
-  grid-template-columns: 1fr 132px;
+  gap: 12px;
+  padding: 14px;
+}
+
+.toolbar strong {
+  display: block;
+  font-size: 18px;
+}
+
+.sidebar-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
-  padding: 12px;
-  border-bottom: 1px solid var(--border);
+}
+
+.browse-toggle {
+  width: 100%;
+}
+
+.row-browser {
+  display: grid;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
 }
 
 .row-list {
+  max-height: min(52vh, 520px);
   overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
 }
 
 .row-button {
@@ -478,9 +503,14 @@ label textarea {
   }
 
   .sidebar {
-    max-height: 260px;
+    position: static;
+    max-height: none;
     border-right: 0;
     border-bottom: 1px solid var(--border);
+  }
+
+  .row-list {
+    max-height: 220px;
   }
 
   .instruction-grid,
