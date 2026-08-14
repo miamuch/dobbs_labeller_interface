@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dobbs Labeling Interface</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section id="loginPanel" class="login-panel">
+        <div>
+          <p class="eyebrow">Dobbs TJST labeling</p>
+          <h1>Annotation Batch</h1>
+        </div>
+        <form id="loginForm" class="login-form">
+          <label for="accessCode">Access code</label>
+          <div class="login-row">
+            <input id="accessCode" name="accessCode" type="password" autocomplete="current-password" required>
+            <button type="submit">Enter</button>
+          </div>
+          <p id="loginError" class="form-error" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section id="appPanel" class="workspace hidden">
+        <header class="topbar">
+          <div>
+            <p id="annotatorName" class="eyebrow">Not signed in</p>
+            <h1>Dobbs Exemplar Labels</h1>
+          </div>
+          <div class="status-cluster">
+            <span id="saveStatus" class="save-status">Loading</span>
+            <button id="exportMine" type="button">Export My CSV</button>
+            <button id="exportAll" type="button" class="admin-only hidden">Export All CSV</button>
+          </div>
+        </header>
+
+        <section class="progress-strip" aria-label="Progress">
+          <div>
+            <strong id="progressCount">0 / 950</strong>
+            <span id="progressDetail">complete</span>
+          </div>
+          <div class="meter"><span id="progressMeter"></span></div>
+        </section>
+
+        <div class="main-grid">
+          <aside class="sidebar">
+            <div class="toolbar">
+              <input id="searchRows" type="search" placeholder="Search rows">
+              <select id="statusFilter" aria-label="Status filter">
+                <option value="all">All</option>
+                <option value="incomplete">Incomplete</option>
+                <option value="complete">Complete</option>
+                <option value="flagged">Excluded</option>
+              </select>
+            </div>
+            <div id="rowList" class="row-list" aria-label="Rows"></div>
+          </aside>
+
+          <article class="label-card">
+            <div class="card-head">
+              <div>
+                <p id="rowMeta" class="eyebrow"></p>
+                <h2 id="rowId">Row</h2>
+              </div>
+              <div class="nav-buttons">
+                <button id="prevRow" type="button">Previous</button>
+                <button id="nextRow" type="button">Next</button>
+              </div>
+            </div>
+
+            <section class="tweet-box">
+              <p id="tweetText"></p>
+            </section>
+
+            <section class="context-grid">
+              <div><span>TJST prior</span><strong id="tjstPrior"></strong></div>
+              <div><span>Topic</span><strong id="tjstTopic"></strong></div>
+              <div><span>Week</span><strong id="weekValue"></strong></div>
+              <div><span>Probability</span><strong id="topicProbability"></strong></div>
+            </section>
+
+            <section class="topic-words">
+              <span>Top words</span>
+              <p id="topicWords"></p>
+            </section>
+
+            <form id="labelForm" class="label-form">
+              <fieldset>
+                <legend>Human stance</legend>
+                <div class="segmented">
+                  <label><input type="radio" name="human_stance" value="pro_choice">Pro-choice</label>
+                  <label><input type="radio" name="human_stance" value="pro_life">Pro-life</label>
+                  <label><input type="radio" name="human_stance" value="neutral">Neutral/news</label>
+                  <label><input type="radio" name="human_stance" value="none">None/unclear</label>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>Confidence</legend>
+                <div class="segmented compact">
+                  <label><input type="radio" name="human_stance_confidence" value="high">High</label>
+                  <label><input type="radio" name="human_stance_confidence" value="medium">Medium</label>
+                  <label><input type="radio" name="human_stance_confidence" value="low">Low</label>
+                </div>
+              </fieldset>
+
+              <div class="field-grid">
+                <label>Evidence span
+                  <input name="stance_evidence_span" type="text">
+                </label>
+                <label>TJST prior correct?
+                  <select name="is_tjst_prior_correct">
+                    <option value=""></option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </label>
+                <label>Side reversal?
+                  <select name="is_side_reversal">
+                    <option value=""></option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </label>
+                <label>Exclude from BERT?
+                  <select name="exclude_from_bert">
+                    <option value=""></option>
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                  </select>
+                </label>
+              </div>
+
+              <label>Exclude reason
+                <input name="exclude_reason" type="text" list="excludeReasons">
+              </label>
+              <datalist id="excludeReasons">
+                <option value="non-English"></option>
+                <option value="too truncated"></option>
+                <option value="duplicate"></option>
+                <option value="unclear"></option>
+                <option value="spam/merch"></option>
+              </datalist>
+
+              <label>Notes
+                <textarea name="stance_notes" rows="3"></textarea>
+              </label>
+
+              <div class="form-actions">
+                <button id="markDraft" type="button">Save Draft</button>
+                <button id="markComplete" type="button" class="primary">Mark Complete</button>
+              </div>
+            </form>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
