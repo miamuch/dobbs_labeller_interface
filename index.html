@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dobbs Labeling Interface</title>
-    <link rel="stylesheet" href="styles.css?v=20260814-duplicates">
+    <link rel="stylesheet" href="styles.css?v=20260814-overlap">
   </head>
   <body>
     <main class="app-shell">
@@ -43,6 +43,7 @@
           </div>
           <div class="meter"><span id="progressMeter"></span></div>
         </section>
+        <p id="overlapNotice" class="overlap-notice"></p>
 
         <nav class="tabbar" aria-label="Workspace tabs">
           <button id="labelTab" type="button" class="tab-button active" aria-controls="labelView">Label</button>
@@ -247,7 +248,7 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="config.js?v=20260814-duplicates"></script>
-    <script src="app.js?v=20260814-duplicates"></script>
+    <script src="config.js?v=20260814-overlap"></script>
+    <script src="app.js?v=20260814-overlap"></script>
   </body>
 </html>

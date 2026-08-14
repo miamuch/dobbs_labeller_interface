@@ -14,6 +14,8 @@ const labelFields = [
   "row_status"
 ];
 
+const overlapTarget = 200;
+
 const state = {
   accessCode: localStorage.getItem("dobbs_access_code") || "",
   annotator: null,
@@ -36,6 +38,7 @@ const els = {
   progressCount: document.getElementById("progressCount"),
   progressDetail: document.getElementById("progressDetail"),
   progressMeter: document.getElementById("progressMeter"),
+  overlapNotice: document.getElementById("overlapNotice"),
   sidebarCurrent: document.getElementById("sidebarCurrent"),
   sidebarPrevRow: document.getElementById("sidebarPrevRow"),
   sidebarNextRow: document.getElementById("sidebarNextRow"),
@@ -218,15 +221,40 @@ function rowIsComplete(label) {
   return label.row_status === "complete";
 }
 
+function isAdmin() {
+  return state.annotator?.annotator_role === "admin";
+}
+
+function overlapIsComplete() {
+  return state.items
+    .slice(0, overlapTarget)
+    .every((item) => rowIsComplete(getLabel(item.annotation_row_id)));
+}
+
+function rowIsAvailable(index) {
+  return isAdmin() || index < overlapTarget || overlapIsComplete();
+}
+
 function renderProgress() {
   const complete = state.items.filter((item) => rowIsComplete(getLabel(item.annotation_row_id))).length;
   const total = state.items.length;
+  const overlapComplete = state.items
+    .slice(0, overlapTarget)
+    .filter((item) => rowIsComplete(getLabel(item.annotation_row_id))).length;
   els.progressCount.textContent = `${complete} / ${total}`;
-  els.progressDetail.textContent = "complete";
+  els.progressDetail.textContent = `${overlapComplete} / ${overlapTarget} shared-overlap rows complete`;
   els.progressMeter.style.width = `${total ? (complete / total) * 100 : 0}%`;
+  if (isAdmin()) {
+    els.overlapNotice.textContent = `Admin view: rows 1-${overlapTarget} are the shared overlap target for RAs.`;
+  } else if (overlapComplete < overlapTarget) {
+    els.overlapNotice.textContent = `Shared overlap target: complete rows 1-${overlapTarget} first. Rows after ${overlapTarget} unlock after your overlap set is complete.`;
+  } else {
+    els.overlapNotice.textContent = `Shared overlap target complete. Rows after ${overlapTarget} are now available.`;
+  }
 }
 
-function itemMatches(item, label, query, filter) {
+function itemMatches(item, label, query, filter, index) {
+  if (!rowIsAvailable(index)) return false;
   const haystack = [
     item.annotation_row_id,
     item.week,
@@ -248,7 +276,7 @@ function renderRowList() {
 
   state.items.forEach((item, index) => {
     const label = getLabel(item.annotation_row_id);
-    if (!itemMatches(item, label, query, filter)) return;
+    if (!itemMatches(item, label, query, filter, index)) return;
     state.filteredIndexes.push(index);
     const button = document.createElement("button");
     button.type = "button";

@@ -197,6 +197,17 @@ button:focus {
   font-size: 13px;
 }
 
+.overlap-notice {
+  margin: 0;
+  padding: 8px 24px;
+  border-bottom: 1px solid var(--border);
+  background: #fbfbfa;
+  color: #3f3f3f;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
 .meter {
   height: 10px;
   background: #dbdbd7;

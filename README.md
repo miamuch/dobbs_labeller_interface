@@ -36,6 +36,8 @@ The RA-facing UI intentionally does not show TJST priors, topic labels, model pr
 
 Rows are displayed in a deterministic stratified order. The ordering rotates across weeks first, then hidden prior/topic groups inside each week, so partial completion covers the project timeline and hidden strata more evenly. These balancing fields are not shown to annotators.
 
+Rows 1-200 are the shared overlap target. RA accounts see rows after 200 only after their own rows 1-200 are complete, so YM, RMA, and DE produce comparable overlap labels before moving on.
+
 Exact repeated tweet text is handled as a duplicate group. When an annotator saves one row in a duplicate group, the app saves the same label to every row with the exact same displayed tweet text for that annotator.
 
 ## Deployment
