@@ -4,6 +4,7 @@ const client = window.supabase.createClient(config.supabaseUrl, config.supabaseK
 const labelFields = [
   "human_stance",
   "human_stance_confidence",
+  "narrative_frame",
   "stance_evidence_span",
   "stance_notes",
   "is_tjst_prior_correct",
@@ -132,6 +133,7 @@ function emptyLabel(rowId) {
     annotation_batch: config.annotationBatch,
     human_stance: "",
     human_stance_confidence: "",
+    narrative_frame: "",
     stance_evidence_span: "",
     stance_notes: "",
     is_tjst_prior_correct: "",
@@ -309,6 +311,7 @@ function downloadCsv(filename, rows) {
     "annotator_name",
     "human_stance",
     "human_stance_confidence",
+    "narrative_frame",
     "stance_evidence_span",
     "stance_notes",
     "is_tjst_prior_correct",

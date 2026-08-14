@@ -1,61 +1,9 @@
-create extension if not exists pgcrypto;
-
-create table if not exists public.dobbs_labeling_annotators (
-  id uuid primary key default gen_random_uuid(),
-  display_name text not null unique,
-  role text not null default 'ra' check (role in ('admin', 'ra')),
-  access_code_hash text not null,
-  active boolean not null default true,
-  created_at timestamptz not null default now()
-);
-
-create table if not exists public.dobbs_labeling_labels (
-  annotation_row_id text not null,
-  annotation_batch text not null default 'sub1000_new_tjst_fit_bert_workflow',
-  annotator_id uuid not null references public.dobbs_labeling_annotators(id),
-  human_stance text,
-  human_stance_confidence text,
-  narrative_frame text,
-  stance_evidence_span text,
-  stance_notes text,
-  is_tjst_prior_correct text,
-  is_side_reversal text,
-  exclude_from_bert text,
-  exclude_reason text,
-  row_status text not null default 'draft' check (row_status in ('draft', 'complete')),
-  updated_at timestamptz not null default now(),
-  created_at timestamptz not null default now(),
-  primary key (annotation_row_id, annotator_id)
-);
-
-alter table public.dobbs_labeling_annotators enable row level security;
-alter table public.dobbs_labeling_labels enable row level security;
-
--- Create annotators manually with private access codes, for example:
--- insert into public.dobbs_labeling_annotators (display_name, role, access_code_hash)
--- values ('RA 1', 'ra', crypt('<private-access-code>', gen_salt('bf')))
--- on conflict (display_name) do nothing;
+alter table public.dobbs_labeling_labels
+  add column if not exists narrative_frame text;
 
 drop function if exists public.dobbs_export_labels(text, text);
 drop function if exists public.dobbs_save_label(text, text, text, jsonb);
 drop function if exists public.dobbs_get_my_labels(text, text);
-drop function if exists public.dobbs_current_annotator(text);
-
-create function public.dobbs_current_annotator(p_access_code text)
-returns table (annotator_id uuid, annotator_name text, annotator_role text)
-language plpgsql
-security definer
-set search_path = public, extensions
-as $$
-begin
-  return query
-  select a.id, a.display_name, a.role
-  from public.dobbs_labeling_annotators a
-  where a.active
-    and a.access_code_hash = crypt(p_access_code, a.access_code_hash)
-  limit 1;
-end;
-$$;
 
 create function public.dobbs_get_my_labels(p_access_code text, p_annotation_batch text default 'sub1000_new_tjst_fit_bert_workflow')
 returns table (
@@ -244,20 +192,14 @@ begin
 end;
 $$;
 
-create index if not exists dobbs_labeling_labels_annotator_id_idx
-  on public.dobbs_labeling_labels (annotator_id);
-
-revoke all on function public.dobbs_current_annotator(text) from public;
 revoke all on function public.dobbs_get_my_labels(text, text) from public;
 revoke all on function public.dobbs_save_label(text, text, text, jsonb) from public;
 revoke all on function public.dobbs_export_labels(text, text) from public;
 
-revoke all on function public.dobbs_current_annotator(text) from authenticated;
 revoke all on function public.dobbs_get_my_labels(text, text) from authenticated;
 revoke all on function public.dobbs_save_label(text, text, text, jsonb) from authenticated;
 revoke all on function public.dobbs_export_labels(text, text) from authenticated;
 
-grant execute on function public.dobbs_current_annotator(text) to anon;
 grant execute on function public.dobbs_get_my_labels(text, text) to anon;
 grant execute on function public.dobbs_save_label(text, text, text, jsonb) to anon;
 grant execute on function public.dobbs_export_labels(text, text) to anon;

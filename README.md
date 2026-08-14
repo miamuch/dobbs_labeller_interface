@@ -23,10 +23,11 @@ codes out of GitHub and share them with annotators through a private channel.
 
 ## Labeling Task
 
-Annotators should label only the human-perceived stance of the tweet:
+Annotators should label the human-perceived stance of the tweet, plus the dominant narrative frame when one is clear:
 
 - `human_stance`
 - `human_stance_confidence`
+- `narrative_frame` when the tweet has a clear dominant frame
 - `stance_evidence_span`
 - `exclude_from_bert` when a row should not be used downstream
 - optional notes/reason fields

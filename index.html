@@ -63,6 +63,7 @@
                 <ul>
                   <li><strong>Human stance:</strong> choose the best stance label for the tweet.</li>
                   <li><strong>Confidence:</strong> rate how confident you are in that stance label.</li>
+                  <li><strong>Narrative frame:</strong> choose the main argument, story, or framing device used by the tweet, if one is clear.</li>
                   <li><strong>Words that justify your label:</strong> copy a short phrase from the tweet that made you choose the stance.</li>
                   <li><strong>Unusable tweet:</strong> mark yes only when the tweet should not be labeled because the text itself is unusable.</li>
                 </ul>
@@ -80,6 +81,15 @@
                   <dt>None/unclear</dt>
                   <dd>Abortion stance cannot be determined, the tweet is off-topic, too ambiguous, too truncated, or uses relevant words without a clear position.</dd>
                 </dl>
+              </section>
+
+              <section>
+                <h3>Narrative Frame</h3>
+                <ul>
+                  <li>Choose the frame that best describes how the tweet talks about abortion, politics, rights, law, medicine, morality, or related issues.</li>
+                  <li>Use <strong>Unclear or multiple frames</strong> when several frames are equally central.</li>
+                  <li>Use <strong>Not about abortion</strong> when the tweet does not actually frame abortion or abortion politics.</li>
+                </ul>
               </section>
 
               <section>
@@ -163,6 +173,35 @@
                   <label><input type="radio" name="human_stance_confidence" value="low">Low</label>
                 </div>
               </fieldset>
+
+              <label>Narrative frame
+                <select name="narrative_frame">
+                  <option value=""></option>
+                  <option value="forced_birth">Forced birth / bodily autonomy</option>
+                  <option value="rights_freedoms">Rights and freedoms</option>
+                  <option value="abortion_access_protection">Abortion access / legal protection</option>
+                  <option value="policy_legal_courts">Policy, legal, or courts</option>
+                  <option value="health_medical">Health care / medical information</option>
+                  <option value="electoral_politics">Elections or partisan politics</option>
+                  <option value="protest_activism">Protest, mobilization, or advocacy</option>
+                  <option value="gender_patriarchy">Gender, patriarchy, or misogyny</option>
+                  <option value="victims_hard_cases">Rape, minors, pregnancy complications, or other hard cases</option>
+                  <option value="pro_life_fetal_personhood">Pro-life / fetal personhood / baby life</option>
+                  <option value="pro_life_pro_woman">Pro-life pro-woman / protects women or mothers</option>
+                  <option value="race_eugenics_demographics">Race, eugenics, or demographic arguments</option>
+                  <option value="religion_morality">Religion or morality</option>
+                  <option value="provider_clinic">Providers, clinics, or abortion care workers</option>
+                  <option value="public_figure_celebrity">Public figure or celebrity advocacy</option>
+                  <option value="issue_bundle">Policy bundling / abortion plus other issues</option>
+                  <option value="not_about_abortion">Not about abortion</option>
+                  <option value="unclear_multiple">Unclear or multiple frames</option>
+                  <option value="other_review">Other / needs review</option>
+                </select>
+              </label>
+
+              <p class="field-help">
+                This is optional, but useful when the tweet has a clear frame. Pick the dominant frame a human reader would identify from the text alone.
+              </p>
 
               <div class="field-grid">
                 <label>What words made you choose this?
