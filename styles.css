@@ -490,6 +490,13 @@ label textarea {
   gap: 12px;
 }
 
+.field-help {
+  margin: -4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
 .form-actions {
   display: flex;
   justify-content: flex-end;

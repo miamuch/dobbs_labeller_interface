@@ -63,8 +63,8 @@
                 <ul>
                   <li><strong>Human stance:</strong> choose the best stance label for the tweet.</li>
                   <li><strong>Confidence:</strong> rate how confident you are in that stance label.</li>
-                  <li><strong>Evidence span:</strong> copy a short phrase from the tweet that justifies the label.</li>
-                  <li><strong>Exclude from training/evaluation:</strong> mark yes only when the tweet should not be used downstream.</li>
+                  <li><strong>Words that justify your label:</strong> copy a short phrase from the tweet that made you choose the stance.</li>
+                  <li><strong>Unusable tweet:</strong> mark yes only when the tweet should not be labeled because the text itself is unusable.</li>
                 </ul>
               </section>
 
@@ -165,10 +165,10 @@
               </fieldset>
 
               <div class="field-grid">
-                <label>Evidence span
-                  <input name="stance_evidence_span" type="text">
+                <label>What words made you choose this?
+                  <input name="stance_evidence_span" type="text" placeholder="Copy a short phrase from the tweet">
                 </label>
-                <label>Exclude from training/evaluation?
+                <label>Is this tweet unusable?
                   <select name="exclude_from_bert">
                     <option value=""></option>
                     <option value="no">No</option>
@@ -177,7 +177,11 @@
                 </label>
               </div>
 
-              <label>Exclude reason
+              <p class="field-help">
+                Most tweets should be marked usable. Use "yes" only for rows that cannot reasonably be labeled, such as spam, non-English text, unrelated content, or text that is too truncated to interpret.
+              </p>
+
+              <label>If unusable, why?
                 <input name="exclude_reason" type="text" list="excludeReasons">
               </label>
               <datalist id="excludeReasons">
