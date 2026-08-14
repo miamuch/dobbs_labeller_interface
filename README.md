@@ -6,6 +6,7 @@ Static stance-labeling app for the 950-row `sub1000_new_tjst_fit_bert_workflow` 
 
 - `index.html`, `styles.css`, `app.js`, `config.js`: browser app.
 - `data/items.json`: static annotation items generated from the CSV.
+- `scripts/stratify_item_order.py`: deterministic ordering script for partial-completion coverage.
 - `supabase/001_labeling_schema.sql`: Supabase tables and RPC functions.
 
 ## Access Codes
@@ -31,6 +32,8 @@ Annotators should label only the human-perceived stance of the tweet:
 - optional notes/reason fields
 
 The RA-facing UI intentionally does not show TJST priors, topic labels, model predictions, or narrative-detection fields.
+
+Rows are displayed in a deterministic stratified order. The ordering rotates across weeks first, then hidden prior/topic groups inside each week, so partial completion covers the project timeline and hidden strata more evenly. These balancing fields are not shown to annotators.
 
 ## Deployment
 
